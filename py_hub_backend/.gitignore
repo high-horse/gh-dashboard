@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+static_root/
+local_settings.py
+
+# Django migrations
+**/migrations/
+!*/migrations/__init__.py
+
+# Environment
+.env
+.env.*
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.python-version
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+.tox/
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Other
+*.swp
+*.swo
