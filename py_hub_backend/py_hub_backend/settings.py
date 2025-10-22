@@ -28,9 +28,6 @@ SECRET_KEY = 'django-insecure-6x2973jard^e)%$_ysakn&j8gfew6zr8oj+j^tolvvhhglp91q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,16 +41,27 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken' ,   
     'django_extensions',
+    'corsheaders',
     
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASS': [
-        'accounts.authentication.CookieTokenAuthentication'
-    ],
-    'EXCEPTION_HANDLER': 'accounts.authentication.custom_exception_handler'
-}
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+
+MIDDLEWARE_ = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -62,6 +70,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+
+APPEND_SLASH = True
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASS': [
+        'accounts.authentication.CookieTokenAuthentication'
+    ],
+    'EXCEPTION_HANDLER': 'accounts.authentication.custom_exception_handler'
+}
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 ROOT_URLCONF = 'py_hub_backend.urls'
 
@@ -143,3 +167,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTH_USER_MODEL = 'accounts.CustomUser'
+
