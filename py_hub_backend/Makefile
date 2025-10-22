@@ -27,3 +27,6 @@ start:
 
 show-urls:
 	python3 manage.py show_urls
+
+install:
+	pip install -r requirements.txt

@@ -1,22 +1,28 @@
 from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from .authentication import CookieTokenAuthentication
 from .models import UserProfile
 from.serializers import UserCreateRequestsSerializer
 from django.utils import timezone
 from rest_framework import viewsets
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 
 # Create your views here.
 @api_view(['GET'])
+@authentication_classes([CookieTokenAuthentication])
+@permission_classes([IsAuthenticated])
 def hello_world(request):
     return Response({"message": "hello world"}, status=status.HTTP_200_OK)
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = UserProfile.objects.filter(deleted_at__isnull=True)
+    # queryset = UserProfile.objects.filter(deleted_at__isnull=True)
+    queryset = UserProfile.active.all()
     serializer_class = UserCreateRequestsSerializer
     
     def destroy(self, request, *args, **kwargs):
@@ -32,10 +38,19 @@ def login_view(request):
     password = request.data.get('password')
     
     from django.contrib.auth import authenticate
+    from rest_framework.authtoken.models import Token
     user = authenticate(username=username, password=password)
     
     if user is not None:
-        return Response({"message": "Login successful."}, status=status.HTTP_200_OK)
+        token, created = Token.objects.get_or_create(user=user)
+        
+        response = Response({
+            "message": "Login successful.",
+            "token": token.key
+        }, status=status.HTTP_200_OK)
+        
+        response.set_cookie(key='auth_token', value=token.key, httponly=True, samesite='Lax' )
+        return response 
     else:
         return Response({"message": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
     
@@ -43,3 +58,12 @@ def login_view(request):
 def logout_view(request):
     # In a real application, you would handle token invalidation or session termination here.
     return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([CookieTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def auth_check_view(request):
+    return Response({
+        "authenticated": True,
+        "username": request.user.username
+    })

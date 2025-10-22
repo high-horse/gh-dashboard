@@ -10,6 +10,11 @@ from django.conf import settings
 #     def __str__(self):
 #         return self.username
     
+class ActiveUserProfileManger(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted_at__isnull=True)
+    
+    
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
@@ -17,6 +22,9 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
+    
+    objects = models.Manager()
+    active = ActiveUserProfileManger()
     
     class Meta:
         db_table = 'user_profiles'  # correct way to set table name
