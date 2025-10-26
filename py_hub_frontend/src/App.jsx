@@ -1,26 +1,28 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
-import {BrowserRouter as Router,  useRoutes } from 'react-router-dom'
+import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 // import './App.css'
-import routes from './routes'
-import { AuthProvider } from '@hooks/useAuth'
+import routes from "./routes";
+import { AuthProvider } from "@hooks/useAuth";
+import { UIProvider } from "@hooks/useUI";
 
 function AppRoutes() {
-  return useRoutes(routes)
+  return useRoutes(routes);
 }
 
 function App() {
-
   return (
     <>
-    <AuthProvider>
-     <Router>
-      <AppRoutes />
-     </Router>
-    </AuthProvider>
+      <Router>
+        <UIProvider>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </UIProvider>
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
