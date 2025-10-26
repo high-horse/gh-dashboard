@@ -33,3 +33,9 @@ def logout_view_handler(request):
     }, status=status.HTTP_200_OK)
     response.delete_cookie('auth_token')
     return response
+
+def auth_check_view_handler(request):
+    return Response({
+        "authenticated": True,
+        "username": request.user.username
+    })
