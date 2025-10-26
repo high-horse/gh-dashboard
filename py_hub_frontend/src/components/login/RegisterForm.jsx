@@ -3,6 +3,7 @@ import { Box, TextField, Button, Typography, FormControl } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@hooks/useAuth";
 import { useUI } from "@hooks/useUI";
+import api from "@api/axiox";
 
 export default function RegisterForm() {
   const auth = useAuth();
@@ -26,9 +27,9 @@ export default function RegisterForm() {
     e.preventDefault();
     showLoader();
     try {
-      await auth.login(form);
+      const response = await api.post(`auth/users`, form);
       showSnackbar("Registration successful!", "success");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       const message =
         error?.response?.data?.message || "Registration failed. Please try again.";
@@ -57,7 +58,7 @@ export default function RegisterForm() {
           name="email"
           label="email"
           variant="outlined"
-          value={form.username}
+          value={form.email}
           onChange={handleChange}
           required
         />
@@ -78,7 +79,7 @@ export default function RegisterForm() {
       <FormControl>
         <TextField
           name="phone_number"
-          label="phone_number"
+          label="Phone Number"
           variant="outlined"
           value={form.phone_number}
           onChange={handleChange}
