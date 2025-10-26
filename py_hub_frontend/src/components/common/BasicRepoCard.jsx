@@ -16,13 +16,50 @@ import CodeIcon from "@mui/icons-material/Code";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useUI } from "@hooks/useUI";
+import api from "@api/axiox";
+import { useEffect, useState } from "react";
 
-export default function BasicRepoCard({ id, repo }) {
-    const {showSnackbar} = useUI();
-    const handleCloneClipboard = async(url) => {
-        await navigator.clipboard.writeText(url);
-        showSnackbar("Repository clone URL copied to clipboard!", "success");
-    };
+export default function BasicRepoCard({ id, repo, selectedID, onShowStargazers }) {
+  const { showLoader, hideLoader, showSnackbar } = useUI();
+  const handleCloneClipboard = async (url) => {
+    await navigator.clipboard.writeText(url);
+    showSnackbar("Repository clone URL copied to clipboard!", "success");
+  };
+
+  const handleRepoActivities = async () => {
+    showLoader();
+    try {
+        const response = await api.get(`auth/github/repos/events/${selectedID}?repo=${repo.name}`);
+        console.log("repo activities ", response.data);
+    } catch (error) {
+        console.error(error);
+    } finally{
+        hideLoader();
+    }
+  }
+
+  const [langs, setLangs] = useState([]);
+  const fetchLanguages = async () => {
+    try {
+        const response = await api.get(`auth/github/repos/basic-api/${selectedID}?url=${repo?.languages_url}`);
+        console.log("repo languages ", response.data);
+        // pick only top 3 languages, pick the keys from the response data
+        const languages = Object.keys(response.data).slice(0, 3);
+        setLangs(languages);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+
+  const handleFetchStargazers = (e) =>{
+    e.stopPropagation()
+    e.preventDefault();
+    if(onShowStargazers && repo?.stargazers_url) onShowStargazers(repo)
+  }
 
   return (
     <Box sx={{ minWidth: 275 }}>
@@ -36,6 +73,7 @@ export default function BasicRepoCard({ id, repo }) {
           borderRadius: 2,
           "&:hover": { boxShadow: 4, transition: "0.3s" },
         }}
+        onClick={handleRepoActivities}
       >
         <CardContent>
           {/* Header: Repo name + visibility */}
@@ -84,14 +122,18 @@ export default function BasicRepoCard({ id, repo }) {
             {repo.language && (
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <CodeIcon fontSize="small" color="action" />
-                <Typography variant="body2">{repo.language}</Typography>
+                <Typography variant="body2">
+                    {langs.join(", ")}
+                </Typography>
+
+                {/* <Typography variant="body2">{repo.language}</Typography> */}
               </Stack>
             )}
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.5} alignItems="center" onClick={handleFetchStargazers}>
               <StarIcon fontSize="small" color="action" />
               <Typography variant="body2">{repo.stargazers_count}</Typography>
             </Stack>
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.5} alignItems="center"  onClick={(e) => e.stopPropagation()} sx={{ cursor: "default", opacity: 0.7 }}>
               <VisibilityIcon fontSize="small" color="action" />
               <Typography variant="body2">{repo.watchers_count}</Typography>
             </Stack>
@@ -102,7 +144,7 @@ export default function BasicRepoCard({ id, repo }) {
           <Button
             size="small"
             variant="flat"
-            color={'primary.main'}
+            color={"primary.main"}
             onClick={handleCloneClipboard}
             startIcon={<ContentCopy />}
           >

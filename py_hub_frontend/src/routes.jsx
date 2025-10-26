@@ -5,9 +5,11 @@ import About from "@pages/About";
 import AdminDashboard from "@pages/admin/Dashboard";
 import { Users } from "@pages/admin/Dashboard";
 import LoginPage from "@pages/unauthenticated/Login";
+import RegisterPage from "@pages/unauthenticated/Register";
 import PublicRoute from "@pages/unauthenticated/PublicRoute";
 import Repos from "@pages/github/Repos";
 import NotFound from "@pages/NotFound";
+
 
 const routes = [
   {
@@ -15,6 +17,12 @@ const routes = [
     name: "Login",
     element: <PublicRoute />,
     children: [{ path: "", element: <LoginPage /> }],
+  },
+  {
+    path: "/register",
+    name: "Register",
+    element: <PublicRoute />,
+    children: [{ path: "", element: <RegisterPage /> }],
   },
   {
     path: "/",

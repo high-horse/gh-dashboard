@@ -1,5 +1,5 @@
 // pages/Home.jsx
-import { Typography, Button, Grid, Alert, ButtonGroup } from "@mui/material";
+import { Typography, Button, Grid, Alert, ButtonGroup, Dialog, DialogTitle, DialogContent, ListItem, ListItemText, Avatar, ListItemAvatar, DialogActions, List } from "@mui/material";
 4;
 import api from "@api/axiox";
 import { useUI } from "@hooks/useUI";
@@ -14,6 +14,9 @@ export default function Home() {
   const [selectedid, setSelectedid] = useState(null);
   const [repos, setRepos] = useState([]);
   const [repopage, setRepopage] = useState(null);
+  const [stargazersDialog, setStarsDialog] = useState(false);
+  const [selectedRepo, setSelectedRepo] = useState(null);
+  const [stargazers, setStargazers] = useState([]);
 
   const handleGithubLink = async (e) => {
     e.preventDefault();
@@ -100,6 +103,22 @@ export default function Home() {
     last: "Last »",
   };
 
+  const handleShowStargazers = async(repo) => {
+    showLoader();
+    try {
+      setStargazers([]);
+      setSelectedRepo(repo);
+      setStarsDialog(true);
+      const response = await api.get(`auth/github/repos/basic-api/${selectedid}?url=${repo.stargazers_url}`);
+      setStargazers(response.data);
+
+    } catch (error) {
+      showSnackbar("Failed to fetch stargazers.", "error");
+    } finally{
+      hideLoader();
+    }
+  }
+
   return (
     <>
       <Typography variant="h4"><span>My Github Dashboard </span> <span><a href=""></a></span></Typography>
@@ -135,7 +154,7 @@ export default function Home() {
           <Grid container spacing={3} sx={{ mt: 2 }}>
             {repos.map((repo) => (
               <Grid item xs={12} sm={6} md={4} key={repo.id}>
-                <BasicRepoCard id={repo.id} repo={repo} />
+                <BasicRepoCard id={repo.id} repo={repo} selectedID={selectedid} onShowStargazers={handleShowStargazers}/>
               </Grid>
             ))}
           </Grid>
@@ -153,8 +172,43 @@ export default function Home() {
               )}
             </ButtonGroup>
           </div>
+
+          <StargazersDialog isStarsDialogOpen={stargazersDialog} onClose={() => setStarsDialog(false)} repo={selectedRepo} stargazers={stargazers} />
+
         </>
       )}
+    </>
+  );
+}
+
+
+const StargazersDialog = ({isStarsDialogOpen, onClose, repo, stargazers}) => {
+  return (
+    <>
+     <Dialog open={isStarsDialogOpen} onClose={onClose} fullWidth maxWidth="sm">
+        <DialogTitle>
+          Stargazers for {repo?.name}
+        </DialogTitle>
+        <DialogContent dividers>
+          {!stargazers || stargazers.length === 0 ? (
+            <Typography>No stargazers yet.</Typography>
+          ) : (
+            <List>
+              {stargazers.map((user) => (
+                <ListItem key={user.id} component="a" href={user.html_url} target="_blank">
+                  <ListItemAvatar>
+                    <Avatar src={user.avatar_url} />
+                  </ListItemAvatar>
+                  <ListItemText primary={user.login} />
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
