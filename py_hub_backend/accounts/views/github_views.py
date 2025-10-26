@@ -31,3 +31,17 @@ def github_repos(request, req_id):
 def github_profiles(request):
     try: return services.github_linked_profiles_handler(request)
     except Exception as e: return utils.handle_exception(e, context={"request":request})
+
+@api_view(['GET'])
+@authentication_classes([CookieTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def github_basic_api(request, account_id):
+    try: return services.github_basic_api_handler(request, account_id)
+    except Exception as e: return utils.handle_exception(e, context={"request":request})
+
+@api_view(['GET'])
+@authentication_classes([CookieTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def github_repo_events(request, account_id):
+    try: return services.github_events_handler(request, account_id)
+    except Exception as e: return utils.handle_exception(e, context={"request":request})

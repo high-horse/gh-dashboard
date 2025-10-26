@@ -159,4 +159,37 @@ def github_repos_handler(request, req_id):
         'pagination': pagination,
     })
 
+def github_basic_api_handler(request, account_id):
+    account = GithubAccount.objects.filter(id=account_id).first()
+    if not account:
+        return Response({
+            "status": False,
+            "message": "Unauthorized"
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
+    url = request.GET.get('url')
+    if not url:
+        return Response({
+            "status": False,
+            "message": "url required"
+        }, status=status.HTTP_400_BAD_REQUEST)
+    token = account.access_token
+    response = requests.get(url, headers={"Authorization": f"token {token}"}).json()
+    return Response(response)
+
+def github_events_handler(request, account_id):
+    # account_id =  request.GET.get('account_id') if not account_id
+
+    repo = request.GET.get('repo')
+    if not account_id or not repo:
+        return Response({"status": False, "message": "account_id and repo required"})
+
+    account = GithubAccount.objects.filter(id=account_id).first()
+    if not account or account.user_id != request.user.id:
+        return Response({"status": False, "message": "Unauthorized"})
+
+    url = f'https://api.github.com/repos/{account.github_username}/{repo}/events'
+    token = account.access_token
+    response = (requests.get(url, headers={"Authorization": f"token {token}"})).json()
+    # utils.dd(url)
+    return Response({"status": False, "message": "Unauthorized", 'data': response})
