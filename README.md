@@ -1,7 +1,7 @@
-# 🧭 GitHub Dashboard
+#  GitHub Dashboard
 
 A simple **GitHub Dashboard** built with **React** (frontend) and **Django** (backend), featuring authentication and integration with the **GitHub API**.  
-This project is created for **learning purposes** — to explore React Js with MUI + Python Django framework.
+This project is created for **learning purposes** — to explore React Js and Python Django framework.
 
 ---
 
@@ -12,10 +12,11 @@ This project is created for **learning purposes** — to explore React Js with M
 - ⚙️ **React + Django REST Framework** architecture  
 - 📊 Simple, responsive dashboard UI  
 - 🧠 Educational project
+- TODOS: idk some more later
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 **Frontend:**
 - React (Vite)
@@ -28,7 +29,7 @@ This project is created for **learning purposes** — to explore React Js with M
 - Django REST Framework
 - django-cors-headers
 
-**External API:**
+**External:**
 - GitHub REST API
 
 ---
@@ -43,12 +44,13 @@ cd gh-dashboard
 
 ### 2️⃣ Backend Setup (Django)
 ```bash
-cd backend
-python -m venv venv
+# you can just run makefile scripts  OR
+# cd to backend dir
+python3 -m venv venv
 source venv/bin/activate  # On Windows use venv\Scripts\activate
 pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
-# or you can just run makefile scripts 
+python3 manage.py migrate
+python3 manage.py runserver
+
 ```
 
