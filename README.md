@@ -1,7 +1,7 @@
 # 🧭 GitHub Dashboard
 
 A simple **GitHub Dashboard** built with **React** (frontend) and **Django** (backend), featuring authentication and integration with the **GitHub API**.  
-This project is created for **learning purposes** — to explore how to connect a modern frontend with a Django REST backend and interact with real-world APIs.
+This project is created for **learning purposes** — to explore React Js with MUI + Python Django framework.
 
 ---
 
@@ -11,16 +11,17 @@ This project is created for **learning purposes** — to explore how to connect 
 - 🧑‍💻 **GitHub API Integration** — fetch repositories, commits, and user data  
 - ⚙️ **React + Django REST Framework** architecture  
 - 📊 Simple, responsive dashboard UI  
-- 🧠 Educational project setup for beginners learning full-stack development
+- 🧠 Educational project
 
 ---
 
 ## 🏗️ Tech Stack
 
 **Frontend:**
-- React (Vite or CRA)
+- React (Vite)
 - Axios (for API calls)
 - React Router
+- React MUI Components
 
 **Backend:**
 - Django
