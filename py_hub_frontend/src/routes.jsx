@@ -2,6 +2,7 @@ import MainLayout from "@layouts/MainLayout";
 import AdminLayout from "@layouts/AdminLayout";
 import Home from "@pages/Home";
 import About from "@pages/About";
+import GithubDashboard from "@pages/GIthubDashboard";
 import AdminDashboard from "@pages/admin/Dashboard";
 import { Users } from "@pages/admin/Dashboard";
 import LoginPage from "@pages/unauthenticated/Login";
@@ -30,8 +31,9 @@ const routes = [
     element: <MainLayout />,
     children: [
         { path: "", name: "HomePage", element: <Home /> },
+        { path: "gh", name:"GithubDashboard", element: <GithubDashboard /> },
         { path: "repos", name: "ReposPage", element: <Repos /> },
-        { path: "about", element: <About /> },
+        { path: "about", name: "AboutPage", element: <About /> },
     ],
   },
   {
