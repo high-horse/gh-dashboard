@@ -18,7 +18,7 @@ export default function BasicUserCard({ username, id, linkedAt, selected, onSele
   return (
     <Card
       sx={{
-        minWidth: 275,
+        minWidth: 200,
         p: 2,
         borderRadius: 3,
         boxShadow: selected ? 10 : 3,

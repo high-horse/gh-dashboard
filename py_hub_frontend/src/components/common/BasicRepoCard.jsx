@@ -19,7 +19,13 @@ import { useUI } from "@hooks/useUI";
 import api from "@api/axiox";
 import { useEffect, useState } from "react";
 
-export default function BasicRepoCard({ id, repo, selectedID, onShowStargazers }) {
+export default function BasicRepoCard({
+  id,
+  repo,
+  selectedID,
+  onShowStargazers,
+  onSelect
+}) {
   const { showLoader, hideLoader, showSnackbar } = useUI();
   const handleCloneClipboard = async (url) => {
     await navigator.clipboard.writeText(url);
@@ -27,39 +33,26 @@ export default function BasicRepoCard({ id, repo, selectedID, onShowStargazers }
   };
 
   const handleRepoActivities = async () => {
-    showLoader();
-    try {
-        const response = await api.get(`auth/github/repos/events/${selectedID}?repo=${repo.name}`);
-        console.log("repo activities ", response.data);
-    } catch (error) {
-        console.error(error);
-    } finally{
-        hideLoader();
-    }
-  }
+    onSelect(repo);
+    return false;
+    // showLoader();
+    // try {
+    //   const response = await api.get(
+    //     `auth/github/repos/events/${selectedID}?repo=${repo.name}`
+    //   );
+    //   console.log("repo activities ", response.data);
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    //   hideLoader();
+    // }
+  };
 
-  const [langs, setLangs] = useState([]);
-  const fetchLanguages = async () => {
-    try {
-        const response = await api.get(`auth/github/repos/basic-api/${selectedID}?url=${repo?.languages_url}`);
-        console.log("repo languages ", response.data);
-        // pick only top 3 languages, pick the keys from the response data
-        const languages = Object.keys(response.data).slice(0, 3);
-        setLangs(languages);
-    } catch (error) {
-        console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    fetchLanguages();
-  }, []);
-
-  const handleFetchStargazers = (e) =>{
-    e.stopPropagation()
+  const handleFetchStargazers = (e) => {
+    e.stopPropagation();
     e.preventDefault();
-    if(onShowStargazers && repo?.stargazers_url) onShowStargazers(repo)
-  }
+    if (onShowStargazers && repo?.stargazers_url) onShowStargazers(repo);
+  };
 
   return (
     <Box sx={{ minWidth: 275 }}>
@@ -119,21 +112,37 @@ export default function BasicRepoCard({ id, repo, selectedID, onShowStargazers }
 
           {/* Language + Stars + Watchers */}
           <Stack direction="row" spacing={2} alignItems="center">
-            {repo.language && (
+            language
+            <Stack direction="row" spacing={0.5} alignItems="center">
+              <CodeIcon fontSize="small" color="action" />
+              <Typography variant="body2">{repo.language}</Typography>
+            </Stack>
+            {/* <Typography variant="body2">{repo.language}</Typography> */}
+
+            {/* {repo.language && (
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <CodeIcon fontSize="small" color="action" />
-                <Typography variant="body2">
-                    {langs.join(", ")}
-                </Typography>
+                <Typography variant="body2">{langs.join(", ")}</Typography>
 
-                {/* <Typography variant="body2">{repo.language}</Typography> */}
+                <Typography variant="body2">{repo.language}</Typography>
               </Stack>
-            )}
-            <Stack direction="row" spacing={0.5} alignItems="center" onClick={handleFetchStargazers}>
+            )} */}
+            <Stack
+              direction="row"
+              spacing={0.5}
+              alignItems="center"
+              onClick={handleFetchStargazers}
+            >
               <StarIcon fontSize="small" color="action" />
               <Typography variant="body2">{repo.stargazers_count}</Typography>
             </Stack>
-            <Stack direction="row" spacing={0.5} alignItems="center"  onClick={(e) => e.stopPropagation()} sx={{ cursor: "default", opacity: 0.7 }}>
+            <Stack
+              direction="row"
+              spacing={0.5}
+              alignItems="center"
+              onClick={(e) => e.stopPropagation()}
+              sx={{ cursor: "default", opacity: 0.7 }}
+            >
               <VisibilityIcon fontSize="small" color="action" />
               <Typography variant="body2">{repo.watchers_count}</Typography>
             </Stack>

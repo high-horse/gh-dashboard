@@ -1,22 +1,25 @@
 // pages/Home.jsx
 import { Typography, Button, Grid, Alert, ButtonGroup, Dialog, DialogTitle, DialogContent, ListItem, ListItemText, Avatar, ListItemAvatar, DialogActions, List } from "@mui/material";
-4;
 import api from "@api/axiox";
 import { useUI } from "@hooks/useUI";
 import { useEffect, useState } from "react";
 import BasicUserCard from "@components/common/BasicUserCard";
 import BasicRepoCard from "@components/common/BasicRepoCard";
+import GithubRepoDetailDialog from "@components/common/GIthubRepoDetailDialog";
 
 export default function Home() {
   const { showLoader, hideLoader, showSnackbar } = useUI();
   const [linked, setLinked] = useState(false);
   const [ghprofile, setGhprofile] = useState([]);
   const [selectedid, setSelectedid] = useState(null);
+  const [selectedUname, setSelectedUname] = useState(null);
   const [repos, setRepos] = useState([]);
   const [repopage, setRepopage] = useState(null);
   const [stargazersDialog, setStarsDialog] = useState(false);
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [stargazers, setStargazers] = useState([]);
+  const [repoDetailDialogOpen, setRepoDetailDialogOpen] = useState(false);
+  const [recentEvents, setRecentEvents] = useState([]);
 
   const handleGithubLink = async (e) => {
     e.preventDefault();
@@ -54,6 +57,20 @@ export default function Home() {
       console.error("Error fetching GitHub profile:", error);
     }
   };
+
+  const fetchRecentUserEvents = async(repo) => {
+    if (!repo?.id || !repo?.name) return;
+    try {
+      
+      let url = `https://api.github.com/users/${selectedUname}/events`
+      const response = await api.get(`auth/github/repos/basic-api/${selectedid}?url=${url}`);
+      setRecentEvents(response.data?.data || []);
+
+    } catch (error) {
+      showSnackbar("Failed to fetch user events.", "error");
+      console.error("Error fetching user events:", error);
+    }
+  }
 
   useEffect(() => {
     if (ghprofile) {
@@ -119,6 +136,11 @@ export default function Home() {
     }
   }
 
+  const handleShowRepoDetails = (repo) => {
+    setSelectedRepo(repo);
+    setRepoDetailDialogOpen(true);
+  }
+
   return (
     <>
       <Typography variant="h4"><span>My Github Dashboard </span> <span><a href=""></a></span></Typography>
@@ -136,13 +158,14 @@ export default function Home() {
       {ghprofile && ghprofile.length > 0 && (
         <Grid container spacing={3} sx={{ mt: 2 }}>
           {ghprofile.map((profile) => (
-            <Grid item xs={12} sm={6} md={4} key={profile.id}>
+            <Grid item xs={12} sm={6} md={6} lg={6} key={profile.id}>
+            {/* <Grid item xs={12} sm={6} md={4} key={profile.id}> */}
               <BasicUserCard
                 username={profile.username}
                 id={profile.id}
                 linkedAt={profile.linked_at}
                 selected={selectedid === profile.id}
-                onSelect={() => setSelectedid(profile.id)}
+                onSelect={() => { setSelectedid(profile.id); setSelectedUname(profile.username); }}
               />
             </Grid>
           ))}
@@ -154,11 +177,11 @@ export default function Home() {
           <Grid container spacing={3} sx={{ mt: 2 }}>
             {repos.map((repo) => (
               <Grid item xs={12} sm={6} md={4} key={repo.id}>
-                <BasicRepoCard id={repo.id} repo={repo} selectedID={selectedid} onShowStargazers={handleShowStargazers}/>
+                <BasicRepoCard id={repo.id} repo={repo} selectedID={selectedid} onShowStargazers={handleShowStargazers} onSelect={handleShowRepoDetails}/>
               </Grid>
             ))}
           </Grid>
-          <div>
+          <div style={{display:"flex", justifyContent: "space-around", padding:"10px"}}>
             <ButtonGroup variant="outlined" color="primary" >
               {paginationOrder.map((key) =>
                 repopage[key] ? (
@@ -174,6 +197,7 @@ export default function Home() {
           </div>
 
           <StargazersDialog isStarsDialogOpen={stargazersDialog} onClose={() => setStarsDialog(false)} repo={selectedRepo} stargazers={stargazers} />
+          <GithubRepoDetailDialog isOpen={repoDetailDialogOpen} onClose={() => setRepoDetailDialogOpen(false)} repo={selectedRepo} selectedProfile={selectedid} />
 
         </>
       )}
