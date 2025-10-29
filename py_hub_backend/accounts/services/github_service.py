@@ -193,3 +193,13 @@ def github_events_handler(request, account_id):
     response = (requests.get(url, headers={"Authorization": f"token {token}"})).json()
     # utils.dd(url)
     return Response({"status": False, "message": "Unauthorized", 'data': response})
+
+def github_profile_unlink_handler(request, pk, username):
+    account = GithubAccount.objects.filter(id=pk, github_username=username, user_id=request.user.id).first()
+    if not account :
+        return Response({"status": False, "message": "NOT FOUND"}, status=status.HTTP_404_NOT_FOUND)
+
+    account.soft_delete()
+    account.save()
+
+    return Response({"status" : True, "message": "Successfully unlinked"})

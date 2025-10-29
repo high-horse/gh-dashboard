@@ -19,6 +19,7 @@ urlpatterns =[
     path('github/login', views.github_login, name="github_login"),
     path('github/callback/', views.github_callback, name="github_callback"),
     path("github/profiles", views.github_profiles, name="github_profiles"),
+    path("github/profile/unlink/<int:pk>/<str:username>", views.github_profile_unlink, name="github_profile_unlink"),
     path('github/repos/<int:req_id>', views.github_repos, name="github_repos"),
     path('github/repos/events/<int:account_id>', views.github_repo_events, name="github_repo_events"),
     path('github/repos/basic-api/<int:account_id>', views.github_basic_api, name="github_basic_api"),

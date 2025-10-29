@@ -21,7 +21,7 @@ class GithubAccount(models.Model):
     # active = ActiveManger()
     # Managers
     objects = ActiveManger()  # default manager now filters deleted_at
-    all_objects = models.Manager()  # access everything
+    all_objects = models.Manager()  # access everything, Includes deleted
 
     class Meta:
         db_table = "github_accounts"

@@ -45,3 +45,10 @@ def github_basic_api(request, account_id):
 def github_repo_events(request, account_id):
     try: return services.github_events_handler(request, account_id)
     except Exception as e: return utils.handle_exception(e, context={"request":request})
+
+@api_view(['POST'])
+@authentication_classes([CookieTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def github_profile_unlink(request, pk, username):
+    try: return services.github_profile_unlink_handler(request, pk, username)
+    except Exception as e : return utils.handle_exception(e, context={"request":request})
