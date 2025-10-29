@@ -159,6 +159,22 @@ export default function GithubDashboard() {
     setRepoDetailDialogOpen(true);
   };
 
+  const unlinkAccount = async (id, username) => {
+    if(!id || !username) return
+    showLoader();
+    try {
+      await api.post(`auth/github/profile/unlink/${id}/${username}`);
+      
+      showSnackbar("Successfully unlinked  ", 'warning')
+      handleGithubProfiles()
+    } catch (error) {
+      showSnackbar("Something went wrong. Failed to unlink. ", 'error');
+      console.error(error);
+    } finally{
+      hideLoader();
+    }
+  }
+
   return (
     <>
       <Typography variant="h4" sx={{display: "flex", justifyContent: "space-between"}}>
@@ -202,6 +218,7 @@ export default function GithubDashboard() {
                   setSelectedid(profile.id);
                   setSelectedUname(profile.username);
                 }}
+                onUnlink={unlinkAccount}
               />
             </Grid>
           ))}
@@ -279,7 +296,7 @@ const StargazersDialog = ({ isStarsDialogOpen, onClose, repo, stargazers }) => {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Stargazers for {repo?.name}</DialogTitle>
+        <DialogTitle>Stargazers for <strong> {repo?.name} </strong></DialogTitle>
         <DialogContent dividers>
           {!stargazers || stargazers.length === 0 ? (
             <Typography>No stargazers yet.</Typography>

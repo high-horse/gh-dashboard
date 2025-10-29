@@ -7,13 +7,31 @@ import {
   Avatar,
   Stack,
   Chip,
+  Button
 } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import { useConfirmDialog } from "@hooks/useConfirmDialog";
 
-export default function BasicUserCard({ username, id, linkedAt, selected, onSelect }) {
+export default function BasicUserCard({ username, id, linkedAt, selected, onSelect, onUnlink }) {
   const handleGithubClick = () => {
     window.open(`https://github.com/${username}`, "_blank");
   };
+  
+  const {showDialog} = useConfirmDialog();
+
+  const handleUnlinkAccount = (e) => {
+    e.stopPropagation()
+    e.preventDefault();
+    showDialog({
+      title: "Confirm",
+      message: "Are you sure you want to unlink your account ?",
+      enableCancel: false,
+      persistant: true,
+      onOk: () => {
+        onUnlink(id, username)
+      }
+    })
+  }
 
   return (
     <Card
@@ -73,11 +91,15 @@ export default function BasicUserCard({ username, id, linkedAt, selected, onSele
           />
         </Box>
 
+       
         {linkedAt && (
-          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block",  mt: 2 }}>
             Linked on: {linkedAt}
           </Typography>
         )}
+        <Typography variant="caption" color="text.secondary" >
+          <Button size="small" onClick={handleUnlinkAccount}>Unlink</Button>
+        </Typography>
       </CardContent>
     </Card>
   );

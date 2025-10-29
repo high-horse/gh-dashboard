@@ -30,7 +30,7 @@ const routes = [
     name: "Main",
     element: <MainLayout />,
     children: [
-        { path: "", name: "HomePage", element: <Home /> },
+        { path: "", name: "HomePage", element: <GithubDashboard /> },
         { path: "gh", name:"GithubDashboard", element: <GithubDashboard /> },
         { path: "repos", name: "ReposPage", element: <Repos /> },
         { path: "about", name: "AboutPage", element: <About /> },

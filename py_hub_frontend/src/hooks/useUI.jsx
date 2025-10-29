@@ -36,13 +36,13 @@ export function UIProvider({children}) {
 
             <Snackbar
                 open={snackbar.open}
-                autoHideDuration={6000}
+                autoHideDuration={2000}
                 onClose={handleSnackbarClose}
                 anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
                 <Alert
                     onClose={handleSnackbarClose}
-                    security={snackbar.severity}
+                    severity={snackbar.severity}
                     sx={{ width: '100%' }}
                 >
                     {snackbar.message}
@@ -56,3 +56,4 @@ export function UIProvider({children}) {
 export function useUI() {
     return useContext(UIContext);
 }
+

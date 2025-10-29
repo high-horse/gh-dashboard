@@ -6,6 +6,7 @@ import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import routes from "./routes";
 import { AuthProvider } from "@hooks/useAuth";
 import { UIProvider } from "@hooks/useUI";
+import { MainProvider } from "@hooks/useMainContext";
 
 function AppRoutes() {
   return useRoutes(routes);
@@ -15,11 +16,13 @@ function App() {
   return (
     <>
       <Router>
-        <UIProvider>
+        <MainProvider>
+          <AppRoutes />
+        </MainProvider>
+        {/* <UIProvider>
           <AuthProvider>
-            <AppRoutes />
           </AuthProvider>
-        </UIProvider>
+        </UIProvider> */}
       </Router>
     </>
   );

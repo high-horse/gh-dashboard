@@ -27,7 +27,9 @@ export default function BasicRepoCard({
   onSelect
 }) {
   const { showLoader, hideLoader, showSnackbar } = useUI();
-  const handleCloneClipboard = async (url) => {
+  const handleCloneClipboard = async (event, url) => {
+    event.preventDefault();
+    event.stopPropagation();
     await navigator.clipboard.writeText(url);
     showSnackbar("Repository clone URL copied to clipboard!", "success");
   };

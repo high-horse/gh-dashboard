@@ -62,7 +62,7 @@ export default function MainLayout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            My Github Accounts
           </Typography>
           <Button color="inherit" variant="outlined" onClick={handleClick}>
             Logout
@@ -88,8 +88,8 @@ const LocalDrawer = ({ toggleDrawer }) => {
   const segments = [
     { path: "/", label: "Home", permissions: [] },
     { path: "/gh", label: "Github Dashboard", permissions: [] },
-    { path: "/repos", label: "Repos", permissions: [] },
-    { path: "/about", label: "About", permissions: [] },
+    // { path: "/repos", label: "Repos", permissions: [] },
+    // { path: "/about", label: "About", permissions: [] },
   ];
 
   return (
