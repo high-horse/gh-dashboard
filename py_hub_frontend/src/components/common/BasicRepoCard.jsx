@@ -26,7 +26,7 @@ export default function BasicRepoCard({
   onShowStargazers,
   onSelect
 }) {
-  const { showLoader, hideLoader, showSnackbar } = useUI();
+  const { showSnackbar } = useUI();
   const handleCloneClipboard = async (event, url) => {
     event.preventDefault();
     event.stopPropagation();
@@ -37,17 +37,6 @@ export default function BasicRepoCard({
   const handleRepoActivities = async () => {
     onSelect(repo);
     return false;
-    // showLoader();
-    // try {
-    //   const response = await api.get(
-    //     `auth/github/repos/events/${selectedID}?repo=${repo.name}`
-    //   );
-    //   console.log("repo activities ", response.data);
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   hideLoader();
-    // }
   };
 
   const handleFetchStargazers = (e) => {
