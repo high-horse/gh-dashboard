@@ -191,7 +191,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename':  'debug.log', #BASE_DIR / 'logs/debug.log',
+            'filename':  env("DEBUG_FILE", default="storage/logs/django.log") , # 'debug.log', #BASE_DIR / 'logs/debug.log',
             'formatter': 'verbose',
         },
         'console': {
