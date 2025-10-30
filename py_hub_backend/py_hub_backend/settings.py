@@ -173,6 +173,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTH_USER_MODEL = 'accounts.CustomUser'
 
+LOG_FILE = env("DEBUG_FILE", default=BASE_DIR / "storage/logs/django.log")
+LOG_FILE = str(LOG_FILE)
+# Create the directory if missing
+os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -191,7 +195,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename':  env("DEBUG_FILE", default="storage/logs/django.log") , # 'debug.log', #BASE_DIR / 'logs/debug.log',
+            'filename':  LOG_FILE , # 'debug.log', #BASE_DIR / 'logs/debug.log',
             'formatter': 'verbose',
         },
         'console': {
