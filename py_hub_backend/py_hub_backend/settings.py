@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os.path
 from pathlib import Path
 import environ
 
@@ -37,11 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+
     'accounts',
+
+
     'rest_framework',
     'rest_framework.authtoken' ,   
     'django_extensions',
     'corsheaders',
+    "storages"
     
 ]
 
@@ -221,3 +226,20 @@ GITHUB_CLIENT_ID = env("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = env("GITHUB_CLIENT_SECRET")
 GITHUB_REDIRECT_URI = env("GITHUB_REDIRECT_URI")
 
+# Local file storage
+MEDIA_ROOT = BASE_DIR / "storage/media"
+MEDIA_URL="/media/"
+
+# minio storage
+MINIO = {
+    "ENDPOINT_URL": env("MINIO_ENDPOINT_URL", default="http://127.0.0.1:9000"),
+    "ACCESS_KEY": env("MINIO_ACCESS_KEY", default="minioadmin"),
+    "SECRET_KEY": env("MINIO_SECRET_KEY", default="minioadmin"),
+    "BUCKET": env("MINIO_BUCKET", default="media"),
+    "REGION": env("MINIO_REGION", default="us-east-1"),
+    "SSL": env.bool("MINIO_SSL_MODE", default=False),
+    "VERIFY": env.bool("MINIO_VERIFY", default=False),
+}
+
+# --Default backend--
+DEFAULT_STORAGE = env("DEFAULT_STORAGE", default="minio")

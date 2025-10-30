@@ -20,7 +20,7 @@ from django.conf import settings
 import requests
 from django.shortcuts import redirect
 
-from accounts import utils
+from core_services import debug
 
 
 def github_login_handler(request):
@@ -191,7 +191,6 @@ def github_events_handler(request, account_id):
     url = f'https://api.github.com/repos/{account.github_username}/{repo}/events'
     token = account.access_token
     response = (requests.get(url, headers={"Authorization": f"token {token}"})).json()
-    # utils.dd(url)
     return Response({"status": False, "message": "Unauthorized", 'data': response})
 
 def github_profile_unlink_handler(request, pk, username):

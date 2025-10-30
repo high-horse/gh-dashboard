@@ -4,7 +4,8 @@ from rest_framework.exceptions import APIException, ValidationError
 import traceback
 from django.conf import settings
 import sys
-from .log_util import log
+from ..logs import  log
+# from .log_util import log
 
 def handle_exception(exc, context=None):
     """
