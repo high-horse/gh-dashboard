@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os.path
 from pathlib import Path
 import environ
-
+import logging
+from logging.handlers import TimedRotatingFileHandler
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -173,10 +174,26 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTH_USER_MODEL = 'accounts.CustomUser'
 
+# Logging the logs
 LOG_FILE = env("DEBUG_FILE", default=BASE_DIR / "storage/logs/django.log")
 LOG_FILE = str(LOG_FILE)
 # Create the directory if missing
 os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+
+# Set Rotation logging
+if env.bool("LOG_ROTATION", default=False):
+    LOG_HANDLER_CLASS="logging.handlers.TimedRotatingFileHandler"
+    LOG_HANDLER_PARAMS={
+        "when": env("LOG_ROTATION_WHEN", default="midnight"),  # e.g. "midnight", "D", "H"
+        "backupCount": env.int("LOG_BACKUP_COUNT", default=7),
+        "encoding": "utf-8"
+    }
+else :
+    LOG_HANDLER_CLASS = "logging.FileHandler"
+    LOG_HANDLER_PARAMS = {
+        "encoding": "utf-8",
+    }
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -194,9 +211,10 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
+            'class': LOG_HANDLER_CLASS,
             'filename':  LOG_FILE , # 'debug.log', #BASE_DIR / 'logs/debug.log',
             'formatter': 'verbose',
+            **LOG_HANDLER_PARAMS
         },
         'console': {
             # 'level': 'DEBUG',
