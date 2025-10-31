@@ -15,7 +15,8 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
-    
+    profile_pic =models.CharField(max_length=1024, blank=True, null=True)
+
     objects = models.Manager()
     active = ActiveUserProfileManger()
     
@@ -34,7 +35,7 @@ class GithubAccount(models.Model):
     linked_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
-    objects = models.manager
+    objects = models.Manager()
     active = ActiveUserProfileManger()
 
     class Meta:

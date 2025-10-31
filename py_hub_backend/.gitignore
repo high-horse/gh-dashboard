@@ -70,3 +70,5 @@ celerybeat.pid
 # Other
 *.swp
 *.swo
+
+storage/*

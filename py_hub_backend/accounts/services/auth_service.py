@@ -35,7 +35,19 @@ def logout_view_handler(request):
     return response
 
 def auth_check_view_handler(request):
+    user = request.user
+    profile = getattr(user, 'userprofile', None)
+    silewate = "https://media.istockphoto.com/id/1142192548/vector/man-avatar-profile-male-face-silhouette-or-icon-isolated-on-white-background-vector.jpg?s=1024x1024&w=is&k=20&c=ISYAkNv_k8SCN_pHkYWqlWdGSbirhx_yCigo7QC8NAw="
+    # pic = getattr()
+
     return Response({
         "authenticated": True,
-        "username": request.user.username
+        "username": request.user.username,
+        "data" : {
+            'username': request.user.username,
+            'full_name': f"{user.first_name} {user.last_name}",
+            "email": user.email,
+            "phone_number": getattr(profile, 'phone_number', None),
+            "profile_pic": silewate
+        }
     })

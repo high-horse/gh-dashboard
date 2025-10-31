@@ -30,3 +30,6 @@ show-urls:
 
 install:
 	pip install -r requirements.txt
+
+startapp:
+	python3 manage.py startapp $(APPNAME)
