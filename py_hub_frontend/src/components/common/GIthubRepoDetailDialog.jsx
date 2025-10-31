@@ -43,7 +43,6 @@ export default function GithubRepoDetailDialog({isOpen, onClose, repo, selectedP
       const response = await api.get(
         `auth/github/repos/basic-api/${selectedProfile}?url=${repo?.languages_url}`
       );
-      console.log("repo languages ", response.data);
       // pick only top 3 languages, pick the keys from the response data
       const languages = Object.keys(response.data).slice(0, 3);
       setLangs(languages);

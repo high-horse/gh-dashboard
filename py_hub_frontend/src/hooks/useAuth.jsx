@@ -16,8 +16,9 @@ export function AuthProvider({ children }) {
       setAuth({
         loading: false,
         authenticated: true,
-        user: response.data.user,
+        user: response.data?.data,
       });
+      
     } catch (error) {
       console.error("error ", error);
 
@@ -36,10 +37,12 @@ export function AuthProvider({ children }) {
     await refreshAuth();
   }
 
+
   useEffect(() => {
     // Correct pattern for async calls inside useEffect
     refreshAuth();
   }, []);
+
 
   return (
     <AuthContext.Provider value={{ ...auth, login, logout, refreshAuth }}>

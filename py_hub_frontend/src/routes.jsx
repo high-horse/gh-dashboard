@@ -10,6 +10,7 @@ import RegisterPage from "@pages/unauthenticated/Register";
 import PublicRoute from "@pages/unauthenticated/PublicRoute";
 import Repos from "@pages/github/Repos";
 import NotFound from "@pages/NotFound";
+import AdminLoginPage from "@pages/unauthenticated/AdminLogin";
 
 
 const routes = [
@@ -35,6 +36,12 @@ const routes = [
         { path: "repos", name: "ReposPage", element: <Repos /> },
         { path: "about", name: "AboutPage", element: <About /> },
     ],
+  },
+  {
+    path:"sec/login",
+    name: 'SecondaryLogin',
+    element:<PublicRoute />,
+    children: [{path: "", element: <AdminLoginPage/>}]
   },
   {
     path: "/admin",

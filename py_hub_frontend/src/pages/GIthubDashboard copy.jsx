@@ -42,7 +42,6 @@ export default function GithubDashboard() {
     showLoader();
     try {
       const response = await api.get("/auth/github/login");
-      console.log("link response ", response.data.auth_url);
       const { auth_url } = response.data;
 
       window.location.href = auth_url;
@@ -63,11 +62,9 @@ export default function GithubDashboard() {
         return;
       }
       showSnackbar("Fetched GitHub profile successfully!", "success");
-      console.log("fetched profile ", res.data?.data);
 
       setGhprofile(res.data?.data);
       setLinked(true);
-      console.log("set profiles ", ghprofile);
     } catch (error) {
       showSnackbar("Failed to fetch GitHub profile.", "error");
       console.error("Error fetching GitHub profile:", error);
@@ -87,12 +84,6 @@ export default function GithubDashboard() {
       console.error("Error fetching user events:", error);
     }
   };
-
-  useEffect(() => {
-    if (ghprofile) {
-      console.log("updated ghprofile state:", ghprofile);
-    }
-  }, [ghprofile]);
 
   useEffect(() => {
     handleGithubProfiles();
@@ -119,9 +110,6 @@ export default function GithubDashboard() {
     }
   }
 
-  useEffect(() => {
-    console.log("new repos ", repos);
-  }, [repos]);
 
   useEffect(() => {
     handleFetchUsersRepos(selectedid, null);
@@ -327,11 +315,6 @@ const RecentEventsComp = ({ recentEvents }) => {
         return event.type;
     }
   };
-
-  useEffect(() => {
-    console.log("recentEvents ", recentEvents);
-    
-  }, [recentEvents])
 
   return (
     <>

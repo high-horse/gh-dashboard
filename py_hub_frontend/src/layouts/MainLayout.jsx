@@ -14,16 +14,22 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  ListItemButton,
+  ListItemIcon,
+  Avatar,
+  Menu,
+  MenuItem,
 } from "@mui/material";
+
 import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from "@mui/icons-material/Home";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import { useConfirmDialog } from "@hooks/useConfirmDialog";
 
 export default function MainLayout() {
   const { loading, authenticated, logout } = useAuth();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const handleClick = async () => {
-    await logout();
-  };
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
@@ -64,9 +70,10 @@ export default function MainLayout() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             My Github Accounts
           </Typography>
-          <Button color="inherit" variant="outlined" onClick={handleClick}>
+          <ProfileMenu />
+          {/* <Button color="inherit" variant="outlined" onClick={handleClick}>
             Logout
-          </Button>
+          </Button> */}
         </Toolbar>
       </AppBar>
 
@@ -86,10 +93,13 @@ export default function MainLayout() {
 const LocalDrawer = ({ toggleDrawer }) => {
   const location = useLocation();
   const segments = [
-    { path: "/", label: "Home", permissions: [] },
-    { path: "/gh", label: "Github Dashboard", permissions: [] },
-    // { path: "/repos", label: "Repos", permissions: [] },
-    // { path: "/about", label: "About", permissions: [] },
+    { path: "/", label: "Home", icon: <HomeIcon />, permissions: [] },
+    {
+      path: "/gh",
+      label: "Github Dashboard",
+      icon: <DashboardIcon />,
+      permissions: [],
+    },
   ];
 
   return (
@@ -105,20 +115,111 @@ const LocalDrawer = ({ toggleDrawer }) => {
       <Divider />
       <List>
         {segments.map((segment) => {
-          const selected = location.pathname === segment.path; // check if current path matches
+          const selected = location.pathname === segment.path;
+
           return (
-            <ListItem
-              button
-              key={segment.path}
-              component={Link}
-              to={segment.path}
-              selected={selected} // MUI prop that highlights selected item
-            >
-              <ListItemText primary={segment.label} />
+            <ListItem key={segment.path} disablePadding>
+              <ListItemButton
+                component={Link}
+                to={segment.path}
+                selected={selected}
+                sx={{
+                  "&.Mui-selected": {
+                    backgroundColor: "primary.main",
+                    color: "white",
+                    "&:hover": { backgroundColor: "primary.dark" },
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    color: selected ? "white" : "inherit",
+                    minWidth: 40,
+                  }}
+                >
+                  {segment.icon}
+                </ListItemIcon>
+                <ListItemText primary={segment.label} />
+              </ListItemButton>
             </ListItem>
           );
         })}
       </List>
     </Box>
+  );
+};
+
+const ProfileMenu = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const { user, loading, authenticated, logout } = useAuth();
+
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
+  const {showDialog} = useConfirmDialog();
+
+  const handleLogout = async () => {
+    try {
+      showDialog({
+        title: "Log Out?",
+        message: "Are you sure you want to Log Out ?",
+        onOk: async() => {
+          await logout();
+        }
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  };
+
+  return (
+    <>
+      <Box>
+        <IconButton onClick={handleClick} size="small" sx={{ p: 0 }}>
+          <Avatar
+            alt={user?.username}
+            src={user?.profile_pic}
+            sx={{
+              width: 40,
+              height: 40,
+              bgcolor: "primary.main",
+            }}
+          />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          PaperProps={{
+            elevation: 3,
+            sx: { mt: 1.5, minWidth: 220, p: 1 },
+          }}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+          <Box sx={{ px: 2, py: 1 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              {user?.full_name?.trim() || user?.username}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {user?.email}
+            </Typography>
+            {user?.phone_number && (
+              <Typography variant="body2" color="text.secondary">
+                📞 {user?.phone_number}
+              </Typography>
+            )}
+          </Box>
+
+          <Divider />
+
+          <MenuItem onClick={handleLogout}>
+            <ListItemText primary="Logout" />
+          </MenuItem>
+        </Menu>
+      </Box>
+    </>
   );
 };
