@@ -25,6 +25,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { useConfirmDialog } from "@hooks/useConfirmDialog";
+import { useUI } from "@hooks/useUI";
 
 export default function MainLayout() {
   const { loading, authenticated, logout } = useAuth();
@@ -68,7 +69,7 @@ export default function MainLayout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            My Github Accounts
+            My Dashboard
           </Typography>
           <ProfileMenu />
           {/* <Button color="inherit" variant="outlined" onClick={handleClick}>
@@ -156,6 +157,7 @@ const ProfileMenu = () => {
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+  const {showSnackbar} = useUI();
 
   const {showDialog} = useConfirmDialog();
 
@@ -164,62 +166,66 @@ const ProfileMenu = () => {
       showDialog({
         title: "Log Out?",
         message: "Are you sure you want to Log Out ?",
+        enableCancel: false,
         onOk: async() => {
           await logout();
         }
       })
     } catch (error) {
+      showSnackbar("Something went wrong.", "error")
       console.error(error)
     }
   };
 
   return (
     <>
-      <Box>
-        <IconButton onClick={handleClick} size="small" sx={{ p: 0 }}>
-          <Avatar
-            alt={user?.username}
-            src={user?.profile_pic}
-            sx={{
-              width: 40,
-              height: 40,
-              bgcolor: "primary.main",
+      {authenticated && (
+        <Box>
+          <IconButton onClick={handleClick} size="small" sx={{ p: 0 }}>
+            <Avatar
+              alt={user?.username}
+              src={user?.profile_pic}
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: "primary.main",
+              }}
+            />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            onClick={handleClose}
+            PaperProps={{
+              elevation: 3,
+              sx: { mt: 1.5, minWidth: 220, p: 1 },
             }}
-          />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          onClick={handleClose}
-          PaperProps={{
-            elevation: 3,
-            sx: { mt: 1.5, minWidth: 220, p: 1 },
-          }}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        >
-          <Box sx={{ px: 2, py: 1 }}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              {user?.full_name?.trim() || user?.username}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {user?.email}
-            </Typography>
-            {user?.phone_number && (
-              <Typography variant="body2" color="text.secondary">
-                📞 {user?.phone_number}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <Box sx={{ px: 2, py: 1 }}>
+              <Typography variant="subtitle1" fontWeight="bold">
+                {user?.full_name?.trim() || user?.username}
               </Typography>
-            )}
-          </Box>
+              <Typography variant="body2" color="text.secondary">
+                {user?.email}
+              </Typography>
+              {user?.phone_number && (
+                <Typography variant="body2" color="text.secondary">
+                  📞 {user?.phone_number}
+                </Typography>
+              )}
+            </Box>
 
-          <Divider />
+            <Divider />
 
-          <MenuItem onClick={handleLogout}>
-            <ListItemText primary="Logout" />
-          </MenuItem>
-        </Menu>
-      </Box>
+            <MenuItem onClick={handleLogout}>
+              <ListItemText primary="Logout" />
+            </MenuItem>
+          </Menu>
+        </Box>
+      )}
     </>
   );
 };
